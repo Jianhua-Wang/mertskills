@@ -13,28 +13,31 @@ talks. Each top-level folder is one skill with its own `SKILL.md`.
 ## Install
 
 Install with the [`skills`](https://www.npmjs.com/package/skills) CLI (needs
-Node.js). `-g` installs for your user instead of one project, and `-a` picks
-the agent.
+Node.js). `-g` installs for your user instead of one project, and each `-a`
+adds an agent. The commands below install for both Claude Code and Codex: one
+copy goes to `~/.agents/skills/`, and each agent gets a symlink to it, in
+`~/.claude/skills/` and `~/.codex/skills/`.
 
 One skill:
 
 ```bash
-npx skills add Jianhua-Wang/mertskills --skill slide-studio -g -a claude-code -y
+npx skills add Jianhua-Wang/mertskills --skill slide-studio -g -a claude-code -a codex -y
 ```
 
 Every skill in this repo:
 
 ```bash
-npx skills add Jianhua-Wang/mertskills --skill '*' -g -a claude-code -y
+npx skills add Jianhua-Wang/mertskills --skill '*' -g -a claude-code -a codex -y
 ```
 
-For Codex as well, add `-a codex`. To see what the repo offers without
+For one agent only, drop the other `-a`. To see what the repo offers without
 installing anything, run `npx skills add Jianhua-Wang/mertskills --list`.
 
 ## Update
 
 `update` pulls the latest version from GitHub, so a change reaches other
-machines only after it is pushed.
+machines only after it is pushed. Claude Code and Codex share one copy, so one
+update covers both.
 
 ```bash
 npx skills update slide-studio -g
@@ -51,7 +54,7 @@ from this repo with `add` first.
 
 ## Developing a skill
 
-On the machine where you edit the skills, link the clone into the agent's
+On the machine where you edit the skills, link the clone into each agent's
 skill folder so edits take effect at once:
 
 ```bash
@@ -60,6 +63,10 @@ git clone https://github.com/Jianhua-Wang/mertskills.git ~/mertskills
 
 ```bash
 ln -s ~/mertskills/slide-studio ~/.claude/skills/slide-studio
+```
+
+```bash
+ln -s ~/mertskills/slide-studio ~/.codex/skills/slide-studio
 ```
 
 A linked skill updates with `git pull`, not `npx skills update`. Don't install
