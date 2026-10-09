@@ -1,0 +1,119 @@
+# Example deck: a 15-minute conference talk on synthetic data.
+# Build:   uv run scripts/build_deck.py assets/example/deck.yaml
+# Render:  uv run scripts/render_deck.py assets/example/deck.pptx
+
+meta:
+  title: Curriculum sampling halves the compute to reach baseline accuracy
+  author: Presenter Name
+  duration_min: 15
+
+slides:
+  - layout: title
+    kicker: Example Conference 2026 · Session 4B
+    title: Curriculum sampling halves the compute needed to reach baseline accuracy
+    subtitle: A loss-driven schedule for noisy, long-tailed training sets
+    authors: "**Presenter Name**, Co-author One, Co-author Two"
+    affiliation: Department of Example Studies · Example University
+
+  - layout: statement
+    kicker: The question
+    text: Can we stop spending compute on examples the model has ==already learned==?
+
+  - layout: section
+    title: Uniform sampling wastes most of its steps
+    subtitle: Where the compute goes in a standard training run
+
+  - layout: figure_text
+    headline: By epoch 10, nine in ten training steps revisit examples the model already gets right
+    image: figures/wasted_steps.png
+    text:
+      - Grey = steps on learned examples
+      - The share grows every epoch
+      - - Hard examples get rarer
+      - These steps add ==almost no gradient signal==
+    source: Synthetic data for illustration. Learned = correct on 3 consecutive visits.
+
+  - layout: section
+    title: Curriculum sampling
+    subtitle: Reweight each example by its recent loss
+
+  - layout: two_columns
+    headline: Curriculum sampling reweights examples by recent loss, not by a fixed schedule
+    left:
+      heading: Uniform (baseline)
+      text:
+        - Every example drawn with equal probability
+        - Cost grows with dataset size
+        - No notion of difficulty
+    right:
+      heading: Curriculum (ours)
+      text:
+        - Weight ∝ exponential moving average of loss
+        - Floor weight keeps easy examples in play
+        - One extra hyperparameter, τ = 0.9
+
+  - layout: figure
+    headline: Curriculum sampling reaches the baseline's final accuracy with 2× less compute
+    image:
+      - figures/curves_stage1.png
+      - figures/curves_stage2.png
+    highlight:
+      - box: [0.388, 0.124, 0.503, 0.243]   # from slide_figures.highlight_box
+        label: 47 vs 100 GPU-hours
+    source: Mean of 5 seeds; shaded bands omitted for clarity (s.d. < 0.01).
+
+  - layout: two_figures
+    headline: The gain is large under label noise and small on clean data
+    left:
+      label: Clean labels
+      image: figures/bars_clean.png
+    right:
+      label: 20% label noise
+      image: figures/bars_noisy.png
+    source: Five benchmark datasets (A–E). Accuracy after 50 GPU-hours.
+
+  - layout: table
+    headline: Gains hold across all five datasets at equal compute
+    table:
+      header: [Dataset, Uniform, Curriculum, Δ]
+      rows:
+        - [A · images, "0.812", "0.861", "+0.049"]
+        - [B · text, "0.771", "0.818", "+0.047"]
+        - [C · audio, "0.843", "0.872", "+0.029"]
+        - [D · tabular, "0.724", "0.781", "+0.057"]
+        - [E · graphs, "0.790", "0.836", "+0.046"]
+        - [Mean, "0.788", "0.834", "+0.046"]
+      widths: [2.2, 1, 1.2, 1]
+      highlight: [6]
+    source: Accuracy at 50 GPU-hours, mean of 5 seeds. Δ = Curriculum − Uniform.
+
+  - layout: text
+    headline: Three caveats limit how far this result generalises
+    reveal: true
+    text:
+      - Tested only up to 1B parameters
+      - Needs per-example loss, which costs memory
+      - - About 4 bytes per example
+      - Gains shrink when labels are clean
+
+  - layout: summary
+    headline: Take-home messages
+    points:
+      - Uniform sampling spends most of its steps on learned examples
+      - Loss-based curriculum sampling reaches baseline accuracy with ==2× less compute==
+      - The gain is largest under label noise
+    acknowledgements: Thanks to the Example Lab and the Example Compute Cluster. Funded by grant EX-0000.
+    contact: presenter@example.edu · github.com/example/curriculum · arXiv:0000.00000
+
+  - layout: section
+    number: B
+    title: Backup slides
+
+  - layout: paper
+    backup: true
+    kicker: Background paper
+    title: "Prioritised sampling by loss: a short history"
+    authors: First Author, Second Author, Last Author
+    citation: Example Journal · 2025 · doi:10.0000/example
+    presenter: Discussed in journal club, March 2026
+    image: figures/paper_teaser.png

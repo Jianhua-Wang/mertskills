@@ -1,1 +1,3 @@
 paseo.json
+__pycache__/
+*-render/
